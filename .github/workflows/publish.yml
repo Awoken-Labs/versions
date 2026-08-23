@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: Awoken-Labs/versions
-          token: ${{ secrets.VERSIONS_TOKEN }}
+          ssh-key: ${{ secrets.VERSIONS_DEPLOY_KEY }}
           path: .versions
 
       - env:
