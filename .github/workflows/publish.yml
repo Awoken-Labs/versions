@@ -20,7 +20,9 @@ jobs:
 
       - id: read
         run: |
-          version=$(grep -oPm1 "^version\s+'\K[^']+" "${{ inputs.manifest }}")
+          # Either quote style: fxmanifest.lua accepts both, and manifests derived from
+          # open-source upstreams (illenium-appearance and friends) use double quotes.
+          version=$(grep -oPm1 "^version\s+[\"']\K[^\"']+" "${{ inputs.manifest }}")
           [ -n "$version" ] || { echo "no version in ${{ inputs.manifest }}"; exit 1; }
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
