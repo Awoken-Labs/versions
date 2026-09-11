@@ -22,7 +22,15 @@ jobs:
         run: |
           # Either quote style: fxmanifest.lua accepts both, and manifests derived from
           # open-source upstreams (illenium-appearance and friends) use double quotes.
-          version=$(grep -oPm1 "^version\s+[\"']\K[^\"']+" "${{ inputs.manifest }}")
+          #
+          # awoken_version wins where it exists. A resource that `provide`s another
+          # resource's name must put the impersonated version in `version`, because that
+          # is the field ox_lib's checkDependency reads, which leaves it no place of its
+          # own. awoken_interact is the first: it answers as ox_target 1.18.2.
+          version=$(grep -oPm1 "^awoken_version\s+[\"']\K[^\"']+" "${{ inputs.manifest }}" || true)
+          if [ -z "$version" ]; then
+            version=$(grep -oPm1 "^version\s+[\"']\K[^\"']+" "${{ inputs.manifest }}")
+          fi
           [ -n "$version" ] || { echo "no version in ${{ inputs.manifest }}"; exit 1; }
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
